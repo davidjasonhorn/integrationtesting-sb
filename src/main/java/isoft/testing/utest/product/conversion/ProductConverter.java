@@ -32,7 +32,7 @@ public class ProductConverter {
     public Product toDomain(ProductTO product) {
         Product p = new Product(product.getProductId(), 
                 product.getProductDescription(), 
-                product.getInitialQuanity(),
+                product.getInitialQuantity(),
                 product.getUnitPrice());
         return p;
     }

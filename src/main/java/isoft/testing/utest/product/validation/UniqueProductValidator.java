@@ -39,9 +39,5 @@ public class UniqueProductValidator implements ConstraintValidator<UniqueProduct
         return ValidationLogicHelper.isUniqueProductId(repository, productId);
 
     }
-
-    @Override
-    public void initialize(UniqueProductConstraint constraintAnnotation) {
-    }
     
 }

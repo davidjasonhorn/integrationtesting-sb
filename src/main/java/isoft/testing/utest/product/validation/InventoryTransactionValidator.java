@@ -64,8 +64,4 @@ public class InventoryTransactionValidator implements ConstraintValidator<Invent
         return isValid;
             
     }
-
-    @Override
-    public void initialize(InventoryTransactionConstraint constraintAnnotation) {
-    }
 }

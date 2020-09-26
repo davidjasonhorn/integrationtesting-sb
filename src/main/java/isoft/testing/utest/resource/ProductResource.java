@@ -33,14 +33,8 @@ public class ProductResource {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void postProduct(@RequestBody ProductTO att) {
-//        try {
-        System.out.println(att.toString());
-        productService.addProduct(att);
-//            return Response.status(Response.Status.CREATED).build();
-//        } catch (BusinessException be) {
-//            return Response.status(Response.Status.BAD_REQUEST).entity(be.getErrorsList()).build();
-//        }
+    public void postProduct(@Valid @RequestBody ProductTO productTO) {
+        productService.addProduct(productTO);
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

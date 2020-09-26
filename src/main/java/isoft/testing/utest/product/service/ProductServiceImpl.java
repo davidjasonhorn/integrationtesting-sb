@@ -21,15 +21,9 @@ import isoft.testing.utest.product.domain.InventoryTransaction;
 import isoft.testing.utest.product.domain.Product;
 import isoft.testing.utest.product.domain.ProductRepository;
 import isoft.testing.utest.product.external.ExchangeRateHelper;
-import isoft.testing.utest.product.validation.UniqueProductConstraint;
-import isoft.testing.utest.product.validation.ValidationError;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import javax.validation.ConstraintViolation;
-import javax.validation.Valid;
-import javax.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,18 +47,9 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ExchangeRateHelper exchangeRateHelper;
 
-    @Autowired
-    private Validator vaildator;
 
     @Override
     public void addProduct(ProductTO product) {
-
-        Set<ConstraintViolation<ProductTO>> violations = vaildator.validate(product, UniqueProductConstraint.class );
-
-        if (!violations.isEmpty()) {
-            ValidationError ve = new ValidationError();
-            ve.setErrors(getProductValidationErrors(violations));
-        }
 
         //convert product to domain
         Product p = productConverter.toDomain(product);
@@ -74,11 +59,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void performTransaction(InventoryTransactionTO inventoryTransaction) {
-        Set<ConstraintViolation<InventoryTransactionTO>> violations = vaildator.validate(inventoryTransaction, InventoryTransactionTO.class);
-        if (!violations.isEmpty()) {
-            ValidationError ve = new ValidationError();
-            ve.setErrors(getInventoryValidationErrors(violations));
-        }
         
         //convert transaction to a domain
         InventoryTransaction inv = inventoryTransactionConverter.toDomain(inventoryTransaction);
@@ -93,12 +73,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public BigDecimal getSalePrice(InventoryTransactionTO inventoryTransaction, String currencyCode) {
-        
-        Set<ConstraintViolation<InventoryTransactionTO>> violations = vaildator.validate(inventoryTransaction, InventoryTransactionTO.class);
-        if (!violations.isEmpty()) {
-            ValidationError ve = new ValidationError();
-            ve.setErrors(getInventoryValidationErrors(violations));
-        }
         
         Product p = productRepository.findByProductId(inventoryTransaction.getProductId());
         //calculate the sale price
@@ -144,27 +118,5 @@ public class ProductServiceImpl implements ProductService {
         findAll.forEach(actualList::add);
         return actualList;
     }
-
-    private List<String> getProductValidationErrors(Set<ConstraintViolation<ProductTO>> violations) {
-        List<String> actualList = new ArrayList<>();
-        while (violations.iterator().hasNext()) {
-            actualList.add(violations.iterator().next().getMessage());
-            ValidationError ve = new ValidationError();
-            ve.setErrors(actualList);
-        }
-        return actualList;
-    }
     
-    private List<String> getInventoryValidationErrors(Set<ConstraintViolation<InventoryTransactionTO>> violations) {
-        List<String> actualList = new ArrayList<>();
-        while (violations.iterator().hasNext()) {
-            actualList.add(violations.iterator().next().getMessage());
-            ValidationError ve = new ValidationError();
-            ve.setErrors(actualList);
-        }
-        return actualList;
-    }
-
-    
-
 }
